@@ -2,36 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Unit Converter</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 500px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Engineering Unit Converter</h1>
-
-        <label for="quantityType">Select Quantity:</label>
-        <select id="quantityType">
+        <h2>Unit Converter</h2>
+        <select id="unitType">
             <option value="length">Length</option>
             <option value="weight">Weight</option>
-            <option value="force">Force</option>
-            <option value="pressure">Pressure</option>
+            <option value="temperature">Temperature</option>
+            <option value="speed">Speed</option>
+            <option value="time">Time</option>
         </select>
-
-        <label for="inputValue">Enter Value:</label>
         <input type="number" id="inputValue" placeholder="Enter value">
-
-        <label for="fromUnit">From:</label>
         <select id="fromUnit"></select>
-
-        <label for="toUnit">To:</label>
         <select id="toUnit"></select>
-
-        <button onclick="convertUnits()">Convert</button>
-
-        <h2>Result: <span id="result"></span></h2>
+        <button onclick="convert()">Convert</button>
+        <h3 id="result"></h3>
     </div>
+    <script>
+        const unitOptions = {
+            length: {"Meter": 1, "Kilometer": 0.001, "Centimeter": 100, "Millimeter": 1000},
+            weight: {"Kilogram": 1, "Gram": 1000, "Pound": 2.20462},
+            temperature: {"Celsius": 1, "Fahrenheit": 33.8, "Kelvin": 274.15},
+            speed: {"Meter/Second": 1, "Kilometer/Hour": 3.6, "Mile/Hour": 2.237},
+            time: {"Second": 1, "Minute": 0.0167, "Hour": 0.000277}
+        };
 
-    <script src="script.js"></script>
+        function populateUnits() {
+            const type = document.getElementById("unitType").value;
+            const fromUnit = document.getElementById("fromUnit");
+            const toUnit = document.getElementById("toUnit");
+            fromUnit.innerHTML = "";
+            toUnit.innerHTML = "";
+            for (let unit in unitOptions[type]) {
+                fromUnit.innerHTML += `<option value="${unitOptions[type][unit]}">${unit}</option>`;
+                toUnit.innerHTML += `<option value="${unitOptions[type][unit]}">${unit}</option>`;
+            }
+        }
+
+        function convert() {
+            let value = parseFloat(document.getElementById("inputValue").value);
+            let from = parseFloat(document.getElementById("fromUnit").value);
+            let to = parseFloat(document.getElementById("toUnit").value);
+            let result = (value / from) * to;
+            document.getElementById("result").innerText = "Converted Value: " + result.toFixed(2);
+        }
+
+        document.getElementById("unitType").addEventListener("change", populateUnits);
+        window.onload = populateUnits;
+    </script>
 </body>
 </html>
